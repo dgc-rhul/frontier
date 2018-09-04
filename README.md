@@ -8,16 +8,13 @@ The Frontier system is under heavy development and should be considered an alpha
 release. This is not considered a "stable" branch.
 
 Further details on Frontier, including a paper that explains the underlying model,
-can be found at the project website:
-http://lsds.doc.ic.ac.uk/projects/ita-dsm
+can be found at the [project website](http://lsds.doc.ic.ac.uk/projects/ita-dsm).
 
 Frontier builds on previous research into data-parallel stream processing for 
-datacenter environments as part of the SEEP project: 
-http://lsds.doc.ic.ac.uk/projects/ita-dsm
+datacenter environments as part of the [SEEP project](http://lsds.doc.ic.ac.uk/projects/seep),
+albeit heavily modified to operate in an edge environment. 
 
-Frontier uses parts of the SEEP runtime system codebase (seep-system),
-albeit heavily modified to operate in an edge environment. Below is some
-information regarding how to build the system.
+Below is some information regarding how to build and run Frontier.
 
 ## Building 
 The project follows the standard Maven directory structure, with two
