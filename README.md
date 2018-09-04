@@ -55,7 +55,7 @@ Finally run as many worker nodes as your query requires:
 
 ```java -jar <system.jar> Worker```
 
-Local mode:
+### Local mode
 
 To run Frontier in a single local machine, append a different port to
 each Worker node:
