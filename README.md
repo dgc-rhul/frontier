@@ -1,14 +1,14 @@
-# Frontier: Resilient Edge Processing for the Internet of Things
-Frontier is an experimental edge processing platform for the Internet of Things (IoT)
-that is being developed by the Distributed and Global Computing Centre (DGC) at 
-Royal Holloway University of London and the Large-Scale Distributed Systems (LSDS)
-group at Imperial College London. It is licensed under EPL (Eclipse Public License).
+# Frontier: A Resilient Edge Processing Platform for the IoT
+Frontier is an experimental edge processing platform for the Internet of Things
+(IoT) that is being developed by the Distributed and Global Computing Centre
+(DGC) at Royal Holloway University of London and the Large-Scale Distributed
+Systems (LSDS) group at Imperial College London. Further details on Frontier,
+including a paper that explains the underlying model, can be found at the
+[project website](http://lsds.doc.ic.ac.uk/projects/ita-dsm).
 
-The Frontier system is under heavy development and should be considered an alpha
-release. This is not considered a "stable" branch.
-
-Further details on Frontier, including a paper that explains the underlying model,
-can be found at the [project website](http://lsds.doc.ic.ac.uk/projects/ita-dsm).
+Frontier is licensed under EPL (Eclipse Public License). The Frontier system is
+under heavy development and should be considered an alpha release. This is not
+considered a "stable" branch.
 
 Frontier builds on previous research into data-parallel stream processing for 
 datacenter environments as part of the [SEEP project](http://lsds.doc.ic.ac.uk/projects/seep),
