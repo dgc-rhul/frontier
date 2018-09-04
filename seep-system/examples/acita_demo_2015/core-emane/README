@@ -1,24 +1,36 @@
+This directory contains code and helper scripts to run Frontier on the CORE/EMANE wireless network emulator and on Raspberry Pi.
+
+# CORE/EMANE setup.
+See the setup scripts for installing the required packages on different versions of Ubuntu (see `ubuntu_*_setup.sh`)
+
 You need to install:
-Core
+Core 4.8
 Emane
 Nrlolsr
 BonnMotion
 Maven (you'll perhaps need to manually install soot-framework-2.5.0.jar into the local mvn repository
 using the suggested mvn install ... when mvn clean compile assembly:single fails).
-olsrd 0.6.3 from ppa at https://launchpad.net/~guardianproject/+archive/ubuntu/commotion (Don't forget to update before installing!).
-For 14.04 can just install olsrd from apt-get directly.
+For 12.04 install olsrd 0.6.3 from ppa at https://launchpad.net/~guardianproject/+archive/ubuntu/commotion (Don't forget to update before installing!).
+For 14.04 you can just install olsrd from apt-get directly.
 python pandas
 python utm
-Then apply diff to core.
-Then apply diff to emane?
-Then update olsrd config?
-Then need to point core config to acita config dir.
-Then need to update /etc/hosts.
-Then need to update core config (e.g. for control net).
 
+Several patches to Core (version 4.8) and Emane are required for it to work properly (see vldb/config/core*.py).
+See vldb/config/etc-hosts-additions for hostnames to add to /etc/hosts.
+
+The core configuration directory should also be symlinked from your home directory to point to vldb/config
+Finally, the default core configuration file may need to be update to use an appropriate control net address (see e.g. vldb/config/core.4.8.koala8).
+
+Tweaks to the default olsrd config may also be required.
+
+# Pi Setup.
+Set up an ssh key and add it to a local agent:
 eval `ssh-agent -s`
 ssh-add ~/.ssh/id_rsa_pi
 
+Various network interface definition files can be found in vldb/config. You may need to overwrite the default interfaces definition on your pi.
 cp /etc/network/interfaces{.adhoc,}
+
+On some machines (e.g. desktops communicating with the pis) it may be required to disable network manager
 edit /etc/NetworkManager.conf
 managed=false
