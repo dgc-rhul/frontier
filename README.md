@@ -21,7 +21,7 @@ information regarding how to build the system.
 
 ## Building 
 The project follows the standard Maven directory structure, with two
-differentiated modules, seep-system and seep-java2sdg.
+differentiated modules, seep-system and seep-streamsql.
 
 From the top level directory:
 
@@ -60,7 +60,7 @@ Finally run as many worker nodes as your query requires:
 
 Local mode:
 
-To run the SEEP system in a single local machine, append a different port to
+To run Frontier in a single local machine, append a different port to
 each Worker node:
 
 ```java -jar <system.jar> Worker <port>```
@@ -102,7 +102,8 @@ java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Master `pwd`/../dist/ac
 ```
 
 N.B. Note the command line is different to before since we are now specifying the classpath explicitly so that it picks up all the jars in lib.
-To start the workers, N.B. again *from the directory* `seep-system/examples/acita_demo_2015/tmp
+To start the workers, N.B. again *from the directory* `seep-system/examples/acita_demo_2015/tmp`
+
 ```
 cd tmp
 java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3501
