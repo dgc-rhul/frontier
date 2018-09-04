@@ -1,1 +1,0 @@
-./frontier-bld.sh pi
