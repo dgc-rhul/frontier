@@ -5,7 +5,7 @@ Frontier is an experimental edge processing platform for the Internet of Things
 Systems (LSDS) group at Imperial College London, and IBM Research T.J. Watson. Further details on Frontier,
 including a paper that explains the underlying model, can be found at the
 [project website](http://lsds.doc.ic.ac.uk/projects/ita-dsm). The research that
-lead to Frontier was sponsored by the [ITA project](nis-ita.org).
+lead to Frontier was sponsored by the [ITA project](https://nis-ita.org).
 
 Frontier is licensed under EPL (Eclipse Public License). The Frontier system is
 under heavy development and should be considered an alpha release. This is not
