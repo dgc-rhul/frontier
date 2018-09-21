@@ -115,7 +115,6 @@ train the prediction model on a raspberry pi. When the workers are ready, the ma
 *Do not proceed to stage 2 at the master before the 2nd command prompt appears!*
 
 # Contributors
-Frontier was created by Dan O'Keeffe (formerly Imperial College London, now Royal Holloway University of London),
-Theodoros Salonidis (IBM Research T.J. Watson), and Peter Pietzuch from the Large-Scale Distributed
-Systems (LSDS) group at Imperial College London.
+Frontier was created by Dan O'Keeffe (formerly in the Large-Scale Distributed Systems (LSDS) group, Imperial College London, now Royal Holloway University of London),
+Theodoros Salonidis (IBM Research T.J. Watson), and Peter Pietzuch (LSDS group, Imperial College London).
 
