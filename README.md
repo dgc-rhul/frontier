@@ -1,11 +1,9 @@
 # Frontier: A Resilient Edge Processing Platform for the IoT
 Frontier is an experimental edge processing platform for the Internet of Things
-(IoT) from the Distributed and Global Computing Centre
-(DGC) at Royal Holloway University of London, the Large-Scale Distributed
-Systems (LSDS) group at Imperial College London, and IBM Research T.J. Watson. Further details on Frontier,
-including a paper that explains the underlying model, can be found at the
-[project website](http://lsds.doc.ic.ac.uk/projects/ita-dsm). The research that
-lead to Frontier was sponsored by the [ITA project](http://nis-ita.org).
+(IoT) that aims to provide high-throughput data-parallel processing across multiple
+edge devices. Further details on Frontier, including a paper that explains the underlying 
+model, can be found at the [project website](http://lsds.doc.ic.ac.uk/projects/ita-dsm). The 
+research that lead to Frontier was sponsored by the [ITA project](http://nis-ita.org).
 
 Frontier is licensed under EPL (Eclipse Public License). The Frontier system is
 under heavy development and should be considered an alpha release. This is not
@@ -115,3 +113,9 @@ Now if you follow the master command prompt as before it should run a face recog
 N.B. You must allow sufficient time for step 1 to complete. It may take a couple of minutes for the workers to
 train the prediction model on a raspberry pi. When the workers are ready, the master command prompt will reappear.
 *Do not proceed to stage 2 at the master before the 2nd command prompt appears!*
+
+# Contributors
+Frontier was created by Dan O'Keeffe (formerly Imperial College London, now Royal Holloway University of London),
+Theodoros Salonidis (IBM Research T.J. Watson), and Peter Pietzuch from the Large-Scale Distributed
+Systems (LSDS) group at Imperial College London.
+
