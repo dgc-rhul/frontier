@@ -79,7 +79,9 @@ You should see tuples being received in shell output for the worker running the 
 
 
 ## Raspberry Pi Face Recognition Instructions
-To run one of the face recognition queries on raspberry pi:
+### 1. 
+To run one of the face recognition queries on raspberry pi, you first need to copy the javacv arm jars from the default local maven directory (`~/.m2`) to the `lib` directory used by ant to build the face recognition query. This is required since unfortunately the current version of javacv in the standard maven repositories doesn't include any arm packages.
+
 ```
 cd seep-system/examples/acita_demo_2015
 cp ~/.m2/repository/org/bytedeco/javacv/1.2/javacv-1.2.jar lib
@@ -91,15 +93,18 @@ ant clean
 ant
 ```
 
-Next, start the master and workers using the following command line *from the directory* `seep-system/examples/acita_demo_2015/tmp`, i.e.
+### 2. 
+Next, start the master using the following command line *from the directory* `seep-system/examples/acita_demo_2015/tmp`:
 ```
 cd tmp
 java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Master `pwd`/../dist/acita_demo_2015.jar Base
 ```
 
-N.B. Note the command line is different to before since we are now specifying the classpath explicitly so that it picks up all the jars in lib.
-To start the workers, N.B. again *from the directory* `seep-system/examples/acita_demo_2015/tmp`
+N.B. Note the command line is different to before since we are now specifying the classpath explicitly so that it picks up all the jars in `lib`.
 
+### 3. 
+*Local Mode*
+To start multiple workers on the same pi, i.e. in Local Mode, you need to start them with a different port *from the directory* `seep-system/examples/acita_demo_2015/tmp`
 ```
 cd tmp
 java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3501
@@ -109,6 +114,17 @@ cd tmp
 java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3503
 ```
 
+*Multiple Pis*
+To start each worker on a separate pi, you can omit the explicit port numbers, i.e. on each pi *from the directory* `seep-system/examples/acita_demo_2015/tmp`
+```
+cd tmp
+java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker
+```
+
+*Multiple Pis, Master on x86 Laptop*
+TODO
+
+### 4. 
 Now if you follow the master command prompt as before it should run a face recognition query.
 N.B. You must allow sufficient time for step 1 to complete. It may take a couple of minutes for the workers to
 train the prediction model on a raspberry pi. When the workers are ready, the master command prompt will reappear.
