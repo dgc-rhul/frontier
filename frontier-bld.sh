@@ -22,6 +22,7 @@ else
 	cp seep-system/examples/acita_demo_2015/lib.arm/*.jar seep-system/examples/acita_demo_2015/lib
 fi
 
+mvn install:install-file -DgroupId=soot -DartifactId=soot-framework -Dversion=2.5.0 -Dpackaging=jar -Dfile=libs/soot/soot-framework/2.5.0/soot-2.5.0.jar
 mvn clean compile assembly:single 
 
 cp seep-system/target/seep-system-0.0.1-SNAPSHOT.jar seep-system/examples/acita_demo_2015/lib 
