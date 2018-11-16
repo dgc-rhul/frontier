@@ -114,11 +114,12 @@ java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker
 #### *Multiple Pis, Master on x86 Laptop*
 TODO
 
-### 3. 
+### 3. Query deployment & execution
 Now if you follow the master command prompt as before it should run a face recognition query.
 N.B. You must allow sufficient time for step 1 to complete. It may take a couple of minutes for the workers to
 train the prediction model on a raspberry pi. When the workers are ready, the master command prompt will reappear.
-*Do not proceed to stage 2 at the master before the 2nd command prompt appears!*
+*Do not proceed to stage 2 at the master before the 2nd command prompt appears!*. Note that as before you can simply
+press `7` at the command prompt to deploy and start the query in one go.
 
 # Contributors
 Frontier was created by Dan O'Keeffe (formerly in the Large-Scale Distributed Systems (LSDS) group, Imperial College London, now Royal Holloway University of London),
