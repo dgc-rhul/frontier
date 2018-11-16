@@ -114,7 +114,7 @@ java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker
 #### *Multiple Pis, Master on x86 Laptop*
 TODO
 
-### 3. Query deployment & execution
+### 3. Running
 Now if you follow the master command prompt as before it should run a face recognition query.
 N.B. You must allow sufficient time for step 1 to complete. It may take a couple of minutes for the workers to
 train the prediction model on a raspberry pi. When the workers are ready, the master command prompt will reappear.
