@@ -93,7 +93,7 @@ java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Master `pwd`/../dist/ac
 N.B. Note the command line is different to before since we are now specifying the classpath explicitly so that it picks up all the jars in `lib`.
 
 ### 2. Workers 
-*Local Mode*
+#### *Local Mode*
 To start multiple workers on the same pi, i.e. in Local Mode, you need to start them with a different port *from the directory* `seep-system/examples/acita_demo_2015/tmp`
 ```
 cd tmp
@@ -104,14 +104,14 @@ cd tmp
 java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3503
 ```
 
-*Multiple Pis*
+#### *Multiple Pis*
 To start each worker on a separate pi, you can omit the explicit port numbers, i.e. on each pi *from the directory* `seep-system/examples/acita_demo_2015/tmp`
 ```
 cd tmp
 java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker
 ```
 
-*Multiple Pis, Master on x86 Laptop*
+#### *Multiple Pis, Master on x86 Laptop*
 TODO
 
 ### 3. 
