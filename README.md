@@ -75,26 +75,16 @@ the instructions on the master command prompt.
 Specifically, after giving the workers a few seconds to register with the master, enter `1` at the master command prompt.
 This will deploy the operators from the query in `src/Base.java` to the workers.
 Once that has completed, simply press `2` to start the query, and enter to start the source.
-You should see tuples being received in shell output for the worker running the sink operator. 
+You should see tuples being received in shell output for the worker running the sink operator.
 
+As an alternative to the above 2 steps, you can also enter `7` at the command prompt to deploy the query operators
+and start the query immediately.
 
 ## Raspberry Pi Face Recognition Instructions
-### 1. 
-To run one of the face recognition queries on raspberry pi, you first need to copy the javacv arm jars from the default local maven directory (`~/.m2`) to the `lib` directory used by ant to build the face recognition query. This is required since unfortunately the current version of javacv in the standard maven repositories doesn't include any arm packages.
+To run one of the face recognition queries on raspberry pi, you must first have built frontier with `./frontier-bld.sh pi`. This will also copy prebuilt javacv jars for arm to the acita_demo_2015 example query's `lib` directory. These jars must be added explicitly to the classpath of the master and workers, as shown in the following steps.
 
-```
-cd seep-system/examples/acita_demo_2015
-cp ~/.m2/repository/org/bytedeco/javacv/1.2/javacv-1.2.jar lib
-cp ~/.m2/repository/org/bytedeco/javacpp/1.2/javacpp-1.2.jar lib
-cp ~/.m2/repository/org/bytedeco/javacpp-presets/1.2/javacpp-1.2.jar lib
-cp ~/.m2/repository/org/bytedeco/javacpp-presets/opencv/3.1.0-1.2/opencv-3.1.0-1.2.jar lib
-cp ~/.m2/repository/org/bytedeco/javacpp-presets/opencv/3.1.0-1.2/opencv-3.1.0-1.2-linux-armhf.jar lib
-ant clean
-ant
-```
-
-### 2. 
-Next, start the master using the following command line *from the directory* `seep-system/examples/acita_demo_2015/tmp`:
+### 1. Master
+Start the master using the following command line *from the directory* `seep-system/examples/acita_demo_2015/tmp`:
 ```
 cd tmp
 java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Master `pwd`/../dist/acita_demo_2015.jar Base
@@ -102,7 +92,7 @@ java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Master `pwd`/../dist/ac
 
 N.B. Note the command line is different to before since we are now specifying the classpath explicitly so that it picks up all the jars in `lib`.
 
-### 3. 
+### 2. Workers 
 *Local Mode*
 To start multiple workers on the same pi, i.e. in Local Mode, you need to start them with a different port *from the directory* `seep-system/examples/acita_demo_2015/tmp`
 ```
@@ -124,7 +114,7 @@ java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker
 *Multiple Pis, Master on x86 Laptop*
 TODO
 
-### 4. 
+### 3. 
 Now if you follow the master command prompt as before it should run a face recognition query.
 N.B. You must allow sufficient time for step 1 to complete. It may take a couple of minutes for the workers to
 train the prediction model on a raspberry pi. When the workers are ready, the master command prompt will reappear.
