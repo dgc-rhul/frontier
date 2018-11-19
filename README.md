@@ -19,11 +19,18 @@ Below is some information regarding how to build and run Frontier.
 The project follows the standard Maven directory structure, with two
 differentiated modules, seep-system and seep-streamsql.
 
-From the top level directory:
+Firstly, you need to set the repository directory `repoDir` in the Frontier
+configuration file. For example, if your copy of the Frontier
+repository is at `/home/myusername/dev/frontier`, then change the value of
+the `repoDir` property in
+`/home/myusername/dev/frontier/seep-system/src/main/resources/config.properties`
+to `repoDir=/home/myusername/dev/frontier`.
+
+Then from the top level directory:
 
 ```./frontier-bld.sh pi```
 
-Will build `seep-system` and the example applications `stateless-simple-query` and
+This will build `seep-system` and the example applications `stateless-simple-query` and
 `acita_demo_2015` to execute on Raspberry Pi. Alternatively, to build for the
 CORE/EMANE wireless network emulator:
 
