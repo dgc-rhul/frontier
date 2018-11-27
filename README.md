@@ -128,6 +128,24 @@ train the prediction model on a raspberry pi. When the workers are ready, the ma
 *Do not proceed to stage 2 at the master before the 2nd command prompt appears!*. Note that as before you can simply
 press `7` at the command prompt to deploy and start the query in one go.
 
+## Configuration and Logging
+Various properties of Frontier can be configured in `seep-system/src/main/resources/config.properties`.
+For example, to change the replication factor and number of tuples sent for the face recognition query you can
+modify the following properties in `config.properties` (and then rebuild using `frontier-bld.sh`):
+```
+replicationFactor=3
+...
+numTuples=1000
+```
+To avoid having to recompile, you can also override the properties above directly on the command line:
+
+```
+java -DreplicationFactor=3 -DnumTuples=1000 -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker
+```
+
+Similarly, logging levels (e.g. `DEBUG` or `INFO`) for different packages can be configured in `seep-system/src/main/resources/logback.xml`.
+Again, a full rebuild is needed afterward.
+
 # Contributors
 Frontier was created by Dan O'Keeffe (formerly in the Large-Scale Distributed Systems (LSDS) group, Imperial College London, now Royal Holloway University of London),
 Theodoros Salonidis (IBM Research T.J. Watson), and Peter Pietzuch (LSDS group, Imperial College London).
