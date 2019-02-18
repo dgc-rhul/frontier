@@ -137,6 +137,12 @@ replicationFactor=3
 ...
 numTuples=1000
 ```
+As another example, if you are running Frontier on Raspberry Pi, but your Pis are connected via infrastructure mode Wifi instead of ad-hoc mode, you will need to modify the configuration file to tell Frontier to not query the OLSRd routing daemon for ETX weights:
+
+```
+disableBackpressureETX=true
+```
+
 To avoid having to recompile, you can also override the properties above directly on the command line:
 
 ```
