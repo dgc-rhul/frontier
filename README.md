@@ -19,7 +19,14 @@ Below is some information regarding how to build and run Frontier.
 The project follows the standard Maven directory structure, with two
 differentiated modules, seep-system and seep-streamsql.
 
-Firstly, you need to set the repository directory `repoDir` in the Frontier
+To build meander, you need `maven` and `ant` installed:
+
+```
+sudo apt-get update
+sudo apt-get install maven ant
+```
+
+Next, you need to set the repository directory `repoDir` in the Frontier
 configuration file. For example, if your copy of the Frontier
 repository is at `/home/myusername/dev/frontier`, then change the value of
 the `repoDir` property in
