@@ -80,18 +80,7 @@ public class NodeManager{
        
 		this.ownPort = ownPort;
 
-		if (Boolean.parseBoolean(GLOBALS.valueFor("useCoreAddr")) && Boolean.parseBoolean(GLOBALS.valueFor("piAdHocDeployment")))
-		{
-			throw new RuntimeException("Logic error - Can't use core and pi at the same time.");
-		}
-		else if (Boolean.parseBoolean(GLOBALS.valueFor("useCoreAddr")) || !Boolean.parseBoolean(GLOBALS.valueFor("piAdHocDeployment")))
-		{
-			interfacePrefs = new String[]{"eth", "lo" , "wlan"};
-		}
-		else
-		{
-			interfacePrefs = new String[]{"wlan1", "wlan0", "lo" , "eth"};
-		}
+		interfacePrefs = getInterfacePrefs();
 
 		try {
 			if (Boolean.parseBoolean(GLOBALS.valueFor("separateControlNet")))
@@ -127,7 +116,7 @@ public class NodeManager{
 					int matchedIndex = getMatchingIndex(intf.getName());
 					if (preferredIndex < 0 || (matchedIndex >= 0 && matchedIndex < preferredIndex)) 
 					{ 
-						preferredIndex = matchedIndex;
+						boolean preferredHasIp = false;
 						LOG.info("New preferred interface "+intf.getName()+" with match index "+matchedIndex);
 						for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) 
 						{
@@ -136,12 +125,15 @@ public class NodeManager{
 							{
 								LOG.info("New preferred address " + next.toString() );
 								preferredIp = next; 
+								preferredHasIp = true;
 							}
 							else
 							{
 								LOG.info("Ignoring IPv6 address " + next.toString() );
 							}
 						}
+
+						if (preferredHasIp) { preferredIndex = matchedIndex; }
 					}
 					else
 					{
@@ -168,6 +160,30 @@ public class NodeManager{
 			if (intf.startsWith(interfacePrefs[i])) { return i; }	
 		} 
 		return -1;
+	}
+
+	private String[] getInterfacePrefs()
+	{
+		if (GLOBALS.valueFor("interfacePrefs") == null || GLOBALS.valueFor("interfacePrefs").equals(""))
+		{	
+			if (Boolean.parseBoolean(GLOBALS.valueFor("useCoreAddr")) && Boolean.parseBoolean(GLOBALS.valueFor("piAdHocDeployment")))
+			{
+				throw new RuntimeException("Logic error - Can't use core and pi at the same time.");
+			}
+			else if (Boolean.parseBoolean(GLOBALS.valueFor("useCoreAddr")) || !Boolean.parseBoolean(GLOBALS.valueFor("piAdHocDeployment")))
+			{
+				return new String[]{"eth", "lo" , "wlan"};
+			}
+			else
+			{
+				return new String[]{"wlan1", "wlan0", "lo" , "eth"};
+			}
+		} 
+		else
+		{
+
+			return GLOBALS.valueFor("interfacePrefs").split(";");
+		}
 	}
 
 	/// \todo{the client-server model implemented here is crap, must be refactored}
