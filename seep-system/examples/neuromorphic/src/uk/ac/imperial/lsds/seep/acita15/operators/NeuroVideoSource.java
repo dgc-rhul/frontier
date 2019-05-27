@@ -15,6 +15,8 @@ import java.io.FilenameFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
@@ -36,7 +38,6 @@ import uk.ac.imperial.lsds.seep.GLOBALS;
 import uk.ac.imperial.lsds.seep.comm.serialization.DataTuple;
 import uk.ac.imperial.lsds.seep.comm.serialization.messages.TuplePayload;
 import uk.ac.imperial.lsds.seep.operator.StatelessOperator;
-import uk.ac.imperial.lsds.seep.acita15.facerec.VideoHelper;
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -75,23 +76,26 @@ public class NeuroVideoSource implements StatelessOperator {
 	private IplImage[] testIplFrames = null;
 	private byte[][] testRawFrames = null;
 	private final String testFramesDir = GLOBALS.valueFor("testFramesDir");
-	//private final String testFramesDir = "images0.5";
-	//private final String testFramesDir = "images/chokepoint";
-	private final String extractedFilesDir = "resources/source";
-	private final boolean loadIplImages = false; 	//TODO: Figure out how to convert between iplimage and byte array.
-	private VideoHelper videoHelper = null;
+	private final String neuroEventsDir = GLOBALS.valueFor("neuroEventsDir");
+	private final String neuroEventsFilename = GLOBALS.valueFor("neuroEventsFilename");
+	private final Boolean getNeuroEventsByNum = Boolean.parseBoolean(GLOBALS.valueFor("getNeuroEventsByNum"));
+	private final Integer maxEventsPerBatch = Integer.parseInt(GLOBALS.valueFor("maxEventsPerBatch"));
+	private final Long maxDurationPerBatch = Long.parseLong(GLOBALS.valueFor("maxDurationPerBatch"));
+	private final Boolean useKeyFrames = false; // Boolean.parseBoolean(GLOBALS.valueFor("useKeyFrames"));
+
+	private BufferedReader eventsFileReader = null;
 	
 	public void setUp() {
-		System.out.println("Setting up VIDEO_SOURCE operator with id="+api.getOperatorId());
-		videoHelper = new VideoHelper();	
-		//Set<String> jarImageFilenames = getJarImageFilenames(testFramesDir);
-		//Set<File> imgFiles = extractJarImages(jarImageFilenames, extractedFilesDir);
-		//testIplFrames = loadGreyImages(extractedFilesDir);
-		//testRawFrames = videoHelper.loadImagesFromJar(testFramesDir);
-		//testRawFrames = videoHelper.loadImagesFromDisk(testFramesDir);
-		testRawFrames = videoHelper.loadImages(testFramesDir);
-		//testRawFrames = videoHelper.loadIplImageBytes(testFramesDir);
-		logger.info("VIDEO_SOURCE setup complete.");
+		System.out.println("Setting up NEURO_VIDEO_SOURCE operator with id="+api.getOperatorId());
+		try {
+			eventsFileReader = new BufferedReader(new FileReader(neuroEventsDir + "/" + neuroEventsFilename));
+		}
+		catch (Exception e) { 
+			logger.error("Exception in video source: "+e);		
+			e.printStackTrace();
+			System.exit(1);
+		}	
+		logger.info("NEURO_VIDEO_SOURCE setup complete.");
 	}
 
 	public void processData(DataTuple dt) {
@@ -107,28 +111,15 @@ public class NeuroVideoSource implements StatelessOperator {
 			boolean sendIndefinitely = Boolean.parseBoolean(GLOBALS.valueFor("sendIndefinitely"));
 			long numTuples = Long.parseLong(GLOBALS.valueFor("numTuples"));
 			long warmUpTuples = Long.parseLong(GLOBALS.valueFor("warmUpTuples"));
-			//int tupleSizeChars = Integer.parseInt(GLOBALS.valueFor("tupleSizeChars"));
 			boolean rateLimitSrc = Boolean.parseBoolean(GLOBALS.valueFor("rateLimitSrc"));
-			long frameRate = Long.parseLong(GLOBALS.valueFor("frameRate"));
-			long interFrameDelay = 1000 / frameRate;
-			logger.info("Source inter-frame delay="+interFrameDelay);
+			long batchRate = Long.parseLong(GLOBALS.valueFor("frameRate"));
+			long interBatchDelay = 1000 / batchRate;
+			logger.info("Source inter-batch delay="+interBatchDelay);
 			
 			final long tStart = System.currentTimeMillis();
 			
-			//String testFramesDir = GLOBALS.valueFor("testFramesDir");
-			//String imgFileExt = GLOBALS.valueFor("imgFileExt");
-			//String testFramesDir = "images";
-			//TODO: Load resources from jar.
-			//String testFramesDir = "/home/dan/dev/seep-ita/seep-system/examples/acita_demo_2015/resources/images";
-			//String testFramesDir = "images";
-			
-			//logger.info("Loading test images...");
-			//byte[][] testFrames = loadImagesFromJar(testFramesDir);
-			//IplImage[] testFrames = loadGreyImages(testFramesDir);
-			
-			//logger.info("Loaded "+testFrames.length+" test images.");
-			int currentFrame = 0;
-			
+			NeuroFrame keyFrame = initKeyFrame();
+
 			while(sendIndefinitely || tupleId < numTuples + warmUpTuples)
 			{
 				if (tupleId == warmUpTuples)
@@ -138,31 +129,16 @@ public class NeuroVideoSource implements StatelessOperator {
 					logger.info("Source sending started at t="+tWarmedUp);
 					logger.info("Source sending started at t="+tWarmedUp);
 				}
-				/*
-				Mat img = testFrames[currentFrame];
-				byte[] matBytes = new byte[safeLongToInt(img.total())*img.channels()];
-				img.data().get(matBytes);
-				DataTuple output = data.newTuple(tupleId, matBytes, img.rows(), img.cols(), img.type(), 0, 0, 0, 0);
-				*/
+
+				NeuroEvent[] events = getNextEvents();
+				NeuroFrame updatedKeyFrame = updateKeyFrame(keyFrame, events);
+				NeuroBatch batch = new NeuroBatch(keyFrame, events);
+				keyFrame = updatedKeyFrame;	
+
 				DataTuple output = null;
 
-				if (loadIplImages)
-				{
-					IplImage iplImage = testIplFrames[currentFrame];
-					byte[] iplBytes = new byte[iplImage.imageSize()];
-					iplImage.getByteBuffer().get(iplBytes);
-					//TODO: Rows, cols, type?
-					//output = data.newTuple(tupleId, iplBytes, iplImage.rows(), iplImage.cols(), iplImage.type(), 0, 0, 0, 0);
-					currentFrame = (currentFrame + 1) % testIplFrames.length;
-				}
-				else
-				{
-					
-					output = data.newTuple(tupleId, testRawFrames[currentFrame], 0, 0, 1, 0, 0, 0, 0, "");
-					//output = data.newTuple(tupleId, testRawFrames[51], 0, 0, 1, 0, 0, 0, 0, "");
-					currentFrame = (currentFrame + 1) % testRawFrames.length;
-				}
-	 
+				//output = data.newTuple(tupleId, testRawFrames[currentFrame], 0, 0, 1, 0, 0, 0, 0, "");
+				output = data.newTuple(tupleId, batch, 0, 0, 1, 0, 0, 0, 0, "");
 				output.getPayload().timestamp = tupleId;
 				if (tupleId % 1000 == 0)
 				{
@@ -176,7 +152,7 @@ public class NeuroVideoSource implements StatelessOperator {
 				
 				tupleId++;
 				
-				long tNext = tStart + (tupleId * interFrameDelay);
+				long tNext = tStart + (tupleId * interBatchDelay);
 				long tNow = System.currentTimeMillis();
 				if (tNext > tNow && rateLimitSrc)
 				{
@@ -220,5 +196,152 @@ public class NeuroVideoSource implements StatelessOperator {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public NeuroFrame initKeyFrame()
+	{
+		if (useKeyFrames)
+		{
+			//TODO: open the events file and find the max x and max y event
+			return new NeuroFrame(100, 100);
+
+		}
+		else { return null; }
+	}
+
+	public NeuroEvent[] getNextEvents() {
+		if (getNeuroEventsByNum) { return getNumEvents(maxEventsPerBatch); }
+		else { return getDurationEvents(maxDurationPerBatch); }
+	}
+
+	public NeuroEvent[] getNumEvents(int num) {
+
+		NeuroEvent[] events = new NeuroEvent[num];
+
+		for (int i = 0; i < num; i++)
+		{
+			events[i] = getNextEvent();
+			if (events[i] == null) 
+			{
+				//EOF, return
+				break;
+			}
+		}
+
+		return events;
+	}
+
+	public NeuroEvent[] getDurationEvents(long duration) { throw new RuntimeException("TODO"); }
+
+	public NeuroEvent getNextEvent()
+	{
+		if (eventsFileReader == null) { return null; }
+		try 
+		{
+			String line;
+			while ((line = eventsFileReader.readLine()) != null)
+			{
+				String stripped = line.trim();
+				if (!stripped.isEmpty()) {
+					return parseNeuroEvent(stripped);
+				}
+			}
+		} catch (Exception e) { 
+			logger.error("Exception in video source: "+e);		
+			e.printStackTrace();
+			System.exit(1);
+		}	
+
+		try{ eventsFileReader.close(); }catch(IOException e) {}
+		eventsFileReader = null;
+		return null;
+	}
+
+	NeuroEvent parseNeuroEvent(String eventStr)
+	{
+		String[] fields = eventStr.split(" ");
+		return new NeuroEvent(
+				Integer.parseInt(fields[0]), //x
+				Integer.parseInt(fields[1]),	//y 
+				Long.parseLong(fields[2]), //ts 
+				Integer.parseInt(fields[3]) > 0); // active
+	}	
+
+
+	public NeuroFrame updateKeyFrame(NeuroFrame keyFrame, NeuroEvent[] next)
+	{
+		if (keyFrame == null) { return null; }
+
+		NeuroFrame updatedFrame = new NeuroFrame(keyFrame);
+		for (int i = 0; i < next.length; i++)
+		{
+
+			updatedFrame.pixelStates[next[i].x][next[i].y] = next[i];
+		}
+
+		return updatedFrame;
+	}
+
+	public final static class NeuroEvent {
+		int x;
+		int y;
+		long ts;
+		boolean active;
+		
+		public NeuroEvent(int x, int y, long ts, boolean active)
+		{
+			this.x = x;
+			this.y = y;
+			this.ts = ts;
+			this.active = active;
+		}
+
+		public NeuroEvent() { this(-1,-1,-1, false);};
+	}
+
+	public final static class NeuroFrame {
+
+		final int xDim;
+		final int yDim;
+		NeuroEvent[][] pixelStates;
+
+		public NeuroFrame(int xDim, int yDim)
+		{
+			this.xDim = xDim;
+			this.yDim = yDim;
+			this.pixelStates = new NeuroEvent[xDim][yDim]; 
+		}
+
+		public NeuroFrame(NeuroFrame other)
+		{
+			this.pixelStates = new NeuroEvent[other.xDim][other.yDim];
+			this.xDim = other.xDim;
+			this.yDim = other.yDim;
+			for (int x = 0; x < xDim; x++)
+			{
+				for (int y = 0; y < yDim; y++)
+				{
+					pixelStates[x][y] = other.pixelStates[x][y];
+				}
+			}
+		}
+	}
+
+	public final static class NeuroBatch {
+		NeuroFrame startFrame;
+		NeuroEvent[] events;
+
+		public NeuroBatch(NeuroFrame sf, NeuroEvent[] e)
+		{
+			this.startFrame = sf;
+			this.events = e;
+		}	
+
+		// For applications that don't need key frames.
+		public NeuroBatch(NeuroEvent[] e)
+		{
+			this(null, e);
+		}
+	}
+
 
 }
