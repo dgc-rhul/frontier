@@ -64,6 +64,13 @@ cd seep-system/examples/acita_demo_2015
 java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Master `pwd`/dist/acita_demo_2015.jar Base
 ```
 
+To save stderr/stdout of the master to a log file for debugging in addition to printing to the console,
+you can instead invoke the above command with its output piped to `tee`:
+
+```
+java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Master `pwd`/dist/acita_demo_2015.jar Base 2>&1 | tee master.log
+```
+
 Finally run as many worker nodes as your query requires:
 
 ```java -jar <system.jar> Worker```
@@ -78,9 +85,9 @@ each Worker node:
 e.g. For the acita_demo_2015 example:
 ```
 cd seep-system/examples/acita_demo_2015
-java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Worker 3501 
-java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Worker 3502 
-java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Worker 3503 
+java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Worker 3501 2>&1 | tee worker1.log
+java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Worker 3502 2>&1 | tee worker2.log 
+java -jar lib/seep-system-0.0.1-SNAPSHOT.jar Worker 3503 2>&1 | tee worker3.log 
 ```
 
 Note you will need to run the master and each worker in a different shell. Then follow
@@ -101,7 +108,7 @@ To run one of the face recognition queries on raspberry pi, you must first have 
 Start the master using the following command line *from the directory* `seep-system/examples/acita_demo_2015/tmp`:
 ```
 cd tmp
-java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Master `pwd`/../dist/acita_demo_2015.jar Base
+java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Master `pwd`/../dist/acita_demo_2015.jar Base 2>&1 | tee master.log
 ```
 
 N.B. Note the command line is different to before since we are now specifying the classpath explicitly so that it picks up all the jars in `lib`.
@@ -111,19 +118,25 @@ N.B. Note the command line is different to before since we are now specifying th
 To start multiple workers on the same pi, i.e. in Local Mode, you need to start them with a different port *from the directory* `seep-system/examples/acita_demo_2015/tmp`
 ```
 cd tmp
-java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3501
+java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3501 2>&1 | tee worker1.log
+
 cd tmp
-java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3502
+java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3502 2>&1 | tee worker2.log
+
 cd tmp
-java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3503
+java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main  Worker 3503 2>&1 | tee worker3.log
+
 ```
 
 #### *Multiple Pis*
 To start each worker on a separate pi, you can omit the explicit port numbers, i.e. on each pi *from the directory* `seep-system/examples/acita_demo_2015/tmp`
 ```
 cd tmp
-java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker
+java -classpath "../lib/*" uk.ac.imperial.lsds.seep.Main Worker 2>&1 | tee worker.log
 ```
+
+Please see the `Configuration and Logging` section for instructions on how to configure Frontier for
+wireless communication over infrastructure mode wifi or ad-hoc wifi.
 
 #### *Multiple Pis, Master on x86 Laptop*
 TODO
@@ -147,6 +160,7 @@ numTuples=1000
 As another example, if you are running Frontier on Raspberry Pi, but your Pis are connected via infrastructure mode Wifi instead of ad-hoc mode, you will need to modify the configuration file to tell Frontier to not query the OLSRd routing daemon for ETX weights:
 
 ```
+piAdHocDeployment=false
 disableBackpressureETX=true
 ```
 
@@ -158,6 +172,8 @@ java -DreplicationFactor=3 -DnumTuples=1000 -classpath "../lib/*" uk.ac.imperial
 
 Similarly, logging levels (e.g. `DEBUG` or `INFO`) for different packages can be configured in `seep-system/src/main/resources/logback.xml`.
 Again, a full rebuild is needed afterward.
+
+TODO: interfacePrefs
 
 # Contributors
 Frontier was created by Dan O'Keeffe (formerly in the Large-Scale Distributed Systems (LSDS) group, Imperial College London, now Royal Holloway University of London),
