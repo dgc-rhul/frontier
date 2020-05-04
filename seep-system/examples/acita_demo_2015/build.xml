@@ -65,7 +65,7 @@
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
-    <delete dir="${rundir}/*"/>
+    <delete dir="${rundir}/*" quiet="true"/>
     <delete includeEmptyDirs="true">
 	  <fileset dir="${rundir}" includes="**/*" defaultexcludes="no"/>
     </delete>
