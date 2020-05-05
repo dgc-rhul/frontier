@@ -1,0 +1,21 @@
+version: 2.1
+
+commands:
+        build:
+                steps:
+                        - checkout
+                        #- run: git clone https://github.com/dgc-rhul/frontier.git repo
+executors:
+        docker-executor:
+                docker:
+                        -image: phusion/baseimage
+
+jobs:
+        build-with-docker:
+                executor: docker-executor
+                steps:
+                        - build 
+workflows:
+        build-with-docker:
+                jobs:
+                        - build-with-docker
