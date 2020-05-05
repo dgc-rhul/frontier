@@ -24,9 +24,7 @@ RUN chown -R frontier:frontier /frontier
 USER frontier 
 ENV USER=frontier
 
-RUN git clone https://github.com/dgc-rhul/frontier.git repo
-WORKDIR /frontier/repo
-
+RUN git clone https://github.com/dgc-rhul/frontier.git . 
 RUN /bin/bash -c "./frontier-bld.sh core 2>&1 | tee build.log"
 
 CMD ["/bin/bash"] 
