@@ -8,7 +8,7 @@ commands:
 executors:
         docker-executor:
                 docker:
-                        -image: phusion/baseimage
+                        - image: phusion/baseimage
 
 jobs:
         build-with-docker:
