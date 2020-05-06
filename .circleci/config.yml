@@ -9,7 +9,7 @@ commands:
 executors:
         docker-executor:
                 docker:
-                        - image: phusion/baseimage
+                        - image: danokeeffe/frontier 
 
 jobs:
         build-with-docker:
