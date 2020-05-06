@@ -9,7 +9,7 @@ commands:
 executors:
         docker-executor:
                 docker:
-                        - image: danokeeffe/frontier 
+                        - image: danokeeffe/frontier:firsttry 
 
 jobs:
         build-with-docker:
