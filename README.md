@@ -187,6 +187,6 @@ Again, a full rebuild is needed afterward.
 TODO: interfacePrefs
 
 # Contributors
-Frontier was created by Dan O'Keeffe (formerly in the Large-Scale Distributed Systems (LSDS) group, Imperial College London, now Royal Holloway University of London),
+Frontier was created by Dan O'Keeffe (Royal Holloway University of London, formerly in the Large-Scale Distributed Systems (LSDS) group, Imperial College London),
 Theodoros Salonidis (IBM Research T.J. Watson), and Peter Pietzuch (LSDS group, Imperial College London).
 
