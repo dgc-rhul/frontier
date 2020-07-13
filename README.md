@@ -19,7 +19,7 @@ Below is some information regarding how to build and run Frontier.
 The project follows the standard Maven directory structure, with two
 differentiated modules, seep-system and seep-streamsql.
 
-To build meander, you need `maven` and `ant` installed:
+To build frontier, you need `maven` and `ant` installed:
 
 ```
 sudo apt-get update
@@ -42,6 +42,17 @@ This will build `seep-system` and the example applications `stateless-simple-que
 CORE/EMANE wireless network emulator:
 
 ```./frontier-bld.sh core```
+
+### Docker build files
+There are Dockerfiles for building frontier for different targets inside the `docker` directory:
+```
+docker +
+       - ubuntu.piworker/Dockerfile   # Use when building on an ubuntu x86 host but where workers will execute on Pi (Arm).
+       - ubuntu.x86worker/Dockerfile  # Use when building on an ubuntu host where workers will also execute on x86 
+       - jessie/Dockerfile # Use when building on Raspbian Jessie. 
+       - buster/Dockerfile # Use when building on Raspbian Buster. 
+```
+Note you can build for Pi from a non-pi host (e.g. ubuntu.piworker), or alternatively just build on the Pi directly (jessie/buster).
 
 ## Running
 The system requires one master node and N worker nodes (one worker node per
