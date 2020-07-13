@@ -1,4 +1,5 @@
 version: 2.1
+# Note docker images stored on DockerHub.
 
 commands:
         build:
